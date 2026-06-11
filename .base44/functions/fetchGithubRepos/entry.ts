@@ -6,8 +6,6 @@ Deno.serve(async (req: Request) => {
   const authenticated = url.searchParams.get("auth") === "true";
 
   // 📡 NATIVE BASE44 TELEMETRY BINDING OVERRIDES
-  // Checks if Base44 has injected live tokens into global variable scopes.
-  // Falls back gracefully to your URL parameters or stable test definitions.
   const liveOuraSleep = Number(globalThis?.Base44?.metrics?.oura?.sleepScore) || Number(url.searchParams.get("oura_sleep")) || 82;
   const liveOuraReady = Number(globalThis?.Base44?.metrics?.oura?.readiness) || Number(url.searchParams.get("oura_ready")) || 78;
   const liveOuraStatus = globalThis?.Base44?.metrics?.oura?.status || url.searchParams.get("oura_status") || "NOMINAL";
@@ -22,12 +20,10 @@ Deno.serve(async (req: Request) => {
   };
 
   // 🚨 AUTOMATION TRIPPING CIRCUIT CRITERIA
-  // Evaluates state dynamically. If WHOOP recovery falls under 45% or Oura under 50%, circuit breaks.
   const pipelineGated = metrics.whoop.recovery < 45 || metrics.oura.readiness < 50;
 
   // =========================================================================
   // 📥 MACHINE INGRESS: SECURE TRIPPING API FEED
-  // Intercepts requests immediately before rendering heavy HTML UI.
   // =========================================================================
   if (url.pathname === "/api/health-gate") {
     const apiPayload = {
@@ -41,12 +37,12 @@ Deno.serve(async (req: Request) => {
     return new Response(JSON.stringify(apiPayload, null, 2), {
       headers: { 
         "Content-Type": "application/json; charset=utf-8",
-        "Access-Control-Allow-Origin": "*" 
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate"
       },
       status: 200
     });
   }
-  // =========================================================================
 
   // 🎛️ PERSONA MANAGEMENT REGISTER
   const personas: Record<string, { username: string; role: string; color: string; blueprint: string }> = {
@@ -96,7 +92,13 @@ Deno.serve(async (req: Request) => {
       </body>
       </html>
     `;
-    return new Response(landingHtml, { headers: { "Content-Type": "text/html; charset=utf-8" }, status: 200 });
+    return new Response(landingHtml, { 
+      headers: { 
+        "Content-Type": "text/html; charset=utf-8",
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate"
+      }, 
+      status: 200 
+    });
   }
 
   // 🖥️ GATEWAY 2: CORE MONITOR MATRIX WORKSPACE
@@ -252,5 +254,11 @@ Deno.serve(async (req: Request) => {
     </html>
   `;
 
-  return new Response(dashboardHtml, { headers: { "Content-Type": "text/html; charset=utf-8" }, status: 200 });
+  return new Response(dashboardHtml, { 
+    headers: { 
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate"
+    }, 
+    status: 200 
+  });
 });
