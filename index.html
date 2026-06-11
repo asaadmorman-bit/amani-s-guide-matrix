@@ -19,7 +19,7 @@
         <p class="text-xs text-slate-400 max-w-xs mx-auto leading-relaxed">Biometric-Responsive Workflow Orchestration Hub.</p>
       </div>
       <hr class="border-slate-800" />
-      <button onclick="enterWorkspace()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-center rounded-xl font-black text-xs py-3.5 tracking-widest uppercase font-mono shadow-lg shadow-cyan-500/15 transition-all">
+      <button onclick="enterWorkspace()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-center rounded-xl font-black text-xs py-3.5 tracking-widest uppercase font-mono shadow-lg shadow-cyan-500/15 transition-all transform active:scale-95">
         Initialize Session Core
       </button>
     </div>
@@ -39,7 +39,9 @@
   </header>
 
   <main class="flex-1 p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
     <div class="lg:col-span-2 space-y-6">
+      
       <section class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
         <span id="profileRole" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-slate-300 uppercase">System_Architect</span>
         <h2 class="text-xl font-black mt-2">Authorized Profile: <span id="profileUser" class="text-cyan-400 font-mono">@amani_dev_matrix</span></h2>
@@ -59,7 +61,7 @@
         </div>
       </section>
 
-      <section class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-inner font-mono text-xs space-y-2">
+      <section class="bg-slate-955 border border-slate-800 bg-slate-950/60 rounded-xl p-5 shadow-inner font-mono text-xs space-y-2">
         <div class="flex items-center justify-between text-[10px] text-slate-500 uppercase tracking-widest border-b border-slate-900 pb-2">
           <span>SYSTEM LOG STREAM // SUB-LATENCY POLLING</span>
           <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -131,10 +133,10 @@
     </div>
   </main>
 
-  <div class="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-md text-[11px] tracking-widest font-mono font-bold text-cyan-400 shadow-2xl uppercase">Technical</div>
+  <div class="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-md text-[11px] tracking-widest font-mono font-bold text-cyan-400 shadow-2xl uppercase">Technical Layout Config</div>
 
   <script>
-    var amaniPersonas = {
+    var matrixPersonas = {
       Developer: { user: '@amani_dev_matrix', role: 'System_Architect', color: 'cyan', blueprint: 'PCI_DSS_v4_Tokenization_Filter' },
       Executive: { user: '@exec_clearance_amani', role: 'Exec_Assistant', color: 'indigo', blueprint: 'SOC2_Type_II_Audit_Pipeline' },
       Family: { user: '@family_lead_amani', role: 'Family_Lead', color: 'emerald', blueprint: 'Household_Pacing_Schedule' }
@@ -142,15 +144,15 @@
     function enterWorkspace() { document.getElementById('portalGate').style.display = 'none'; }
     function verifyKey() {
       var b = document.getElementById('keyStatus'); b.innerText = "VERIFIED_AUTH";
-      b.className = "text-emerald-400 font-bold text-[10px] uppercase bg-emerald-500/10 px-1.5 py-0.5 border border-emerald-500/20 rounded";
+      b.className = "text-emerald-400 font-bold text-[10px] uppercase bg-emerald-500/10 px-1.5 py-0.5 border border-emerald-500/20 rounded shadow-[0_0_8px_rgba(52,211,153,0.2)]";
     }
     function switchPersona(p) {
-      var d = amaniPersonas[p];
+      var d = matrixPersonas[p];
       document.getElementById('profileUser').innerText = d.user;
       document.getElementById('profileUser').className = 'text-' + d.color + '-400 font-mono';
       document.getElementById('profileRole').innerText = d.role;
       document.getElementById('profileBlueprint').innerText = d.blueprint;
-      document.getElementById('statusDot').className = 'h-2.5 w-2.5 rounded-full bg-' + d.color + '-400';
+      document.getElementById('statusDot').className = 'h-2.5 w-2.5 rounded-full bg-' + d.color + '-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]';
       ['Developer', 'Executive', 'Family'].forEach(function(x) {
         var btn = document.getElementById('btn-' + x);
         if(x === p) { btn.className = 'px-3 py-1 rounded text-xs font-mono font-bold transition bg-' + d.color + '-500/10 text-' + d.color + '-400 border border-' + d.color + '-500/20'; }
@@ -158,56 +160,5 @@
       });
     }
   </script>
-  <div class="fixed bottom-6 right-6 z-[9999] w-80 bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-4 font-sans text-slate-100">
-  <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-    <span class="text-xs font-bold font-mono tracking-widest text-slate-400 uppercase">Live Wearable Sync</span>
-    <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-  </div>
-
-  <div class="bg-slate-950 p-3 border border-slate-800/80 rounded-xl space-y-1.5">
-    <div class="flex justify-between items-center text-[11px] font-mono">
-      <span class="font-bold text-slate-300">🦪 Oura Ring Gen3</span>
-      <span class="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">NOMINAL</span>
-    </div>
-    <div class="grid grid-cols-2 gap-1.5 text-center font-mono">
-      <div class="bg-slate-900/40 p-1.5 rounded border border-slate-800/30">
-        <div class="text-[8px] text-slate-500 uppercase">Readiness</div>
-        <div class="text-xs font-bold text-emerald-400">78%</div>
-      </div>
-      <div class="bg-slate-900/40 p-1.5 rounded border border-slate-800/30">
-        <div class="text-[8px] text-slate-500 uppercase">Sleep Score</div>
-        <div class="text-xs font-bold text-slate-300">82</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bg-slate-950 p-3 border border-slate-800/80 rounded-xl space-y-1.5">
-    <div class="flex justify-between items-center text-[11px] font-mono">
-      <span class="font-bold text-slate-300">🚀 WHOOP Strap 4.0</span>
-      <span class="px-1.5 py-0.5 rounded text-[9px] bg-rose-500/10 text-rose-400 font-bold border border-rose-500/20">WARNING</span>
-    </div>
-    <div class="grid grid-cols-2 gap-1.5 text-center font-mono">
-      <div class="bg-slate-900/40 p-1.5 rounded border border-slate-800/30">
-        <div class="text-[8px] text-slate-500 uppercase">Recovery</div>
-        <div class="text-xs font-bold text-rose-400">42%</div>
-      </div>
-      <div class="bg-slate-900/40 p-1.5 rounded border border-slate-800/30">
-        <div class="text-[8px] text-slate-500 uppercase">Day Strain</div>
-        <div class="text-xs font-bold text-slate-300">14.2</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="p-2.5 rounded-xl border text-center font-mono text-[10px] font-black tracking-wider uppercase bg-rose-500/10 border-rose-500/30 text-rose-400 animate-pulse">
-    🚨 Circuit Breaker: Pipelines Gated (PAUSED_HITL)
-  </div>
-
-  <div class="bg-slate-950 p-2.5 border border-slate-800 rounded-xl flex items-center justify-between text-[10px] font-mono">
-    <span class="text-slate-400">🛡️ FIDO2 Token</span>
-    <button onclick="document.getElementById('tokenState').innerText='AUTHORIZED'; document.getElementById('tokenState').className='text-emerald-400 font-bold';" id="tokenState" class="text-amber-400 font-bold underline cursor-pointer hover:text-amber-300">
-      TAP KEY
-    </button>
-  </div>
-</div>
 </body>
 </html>
