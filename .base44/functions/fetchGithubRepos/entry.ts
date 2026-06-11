@@ -105,6 +105,22 @@ Deno.serve(async (req: Request) => {
               </span>
             </div>
           </section>
+
+          <section class="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-inner font-mono text-xs space-y-2">
+            <div class="flex items-center justify-between text-[10px] text-slate-500 uppercase tracking-widest border-b border-slate-900 pb-2">
+              <span>SYSTEM LOG STREAM // SUB-LATENCY POLLING</span>
+              <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            </div>
+            <div class="space-y-1.5 text-[11px] leading-relaxed max-h-28 overflow-y-auto pt-1 text-slate-400">
+              <div><span class="text-slate-600">[13:42:01]</span> <span class="text-cyan-400 font-bold">INFO:</span> Initializing Deno serverless edge execution layer... <span class="text-emerald-400">SUCCESS</span></div>
+              <div><span class="text-slate-600">[13:42:02]</span> <span class="text-cyan-400 font-bold">INFO:</span> Listening on global ingress routing gateway proxy hooks.</div>
+              <div><span class="text-slate-600">[13:45:14]</span> <span class="text-indigo-400 font-bold">RECV:</span> Ingesting physiological telemetry webhook array from provider: <span class="text-slate-200">WHOOP_STRAP_4_0</span></div>
+              <div><span class="text-slate-600">[13:45:15]</span> <span class="text-amber-400 font-bold">WARN:</span> Recovery value dropped to <span class="text-rose-400 font-bold">42%</span> (Threshold ceiling: 45%).</div>
+              <div class="text-rose-400 font-bold bg-rose-500/5 p-1 rounded border border-rose-500/10 animate-pulse">
+                <span class="text-slate-600">[13:45:15]</span> [INTERCEPT] Gating active execution pipelines. Tripping Human-in-the-Loop circuit breaker token.
+              </div>
+            </div>
+          </section>
         </div>
 
         <div class="space-y-6">
@@ -155,9 +171,33 @@ Deno.serve(async (req: Request) => {
               ${pipelineGated ? '🚨 Trigger Intercept: Manual Approval Required' : '✓ Telemetry Normal: Pipelines Clear'}
             </div>
           </section>
+
+          <section class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl space-y-3">
+            <h3 class="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono">Hardware Access Layer</h3>
+            <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between text-xs font-mono">
+              <div class="text-slate-300">🛡️ FIDO2 YubiKey Matrix Core</div>
+              <span id="keyStatus" class="text-amber-400 font-bold text-[10px] uppercase bg-amber-500/10 px-1.5 py-0.5 border border-amber-500/20 rounded">STANDBY</span>
+            </div>
+            <button onclick="verifyKey()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-mono font-bold text-[11px] py-2.5 rounded transition shadow-lg active:scale-[0.98]">
+              🔑 Simulate Hardware Token Verification
+            </button>
+          </section>
         </div>
 
       </main>
+
+      <script>
+        function verifyKey() {
+          const badge = document.getElementById('keyStatus');
+          badge.innerText = "VERIFIED_AUTH";
+          badge.className = "text-emerald-400 font-bold text-[10px] uppercase bg-emerald-500/10 px-1.5 py-0.5 border border-emerald-500/20 rounded shadow-[0_0_8px_rgba(52,211,153,0.2)]";
+        }
+      </script>
+
+      <div class="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-md text-[11px] tracking-widest font-mono font-bold text-cyan-400 shadow-2xl uppercase z-50">
+        Technical
+      </div>
+
     </body>
     </html>
   `;
