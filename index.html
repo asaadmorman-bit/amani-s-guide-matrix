@@ -134,7 +134,7 @@
   <div class="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-md text-[11px] tracking-widest font-mono font-bold text-cyan-400 shadow-2xl uppercase">Technical</div>
 
   <script>
-    var matrixPersonas = {
+    var amaniPersonas = {
       Developer: { user: '@amani_dev_matrix', role: 'System_Architect', color: 'cyan', blueprint: 'PCI_DSS_v4_Tokenization_Filter' },
       Executive: { user: '@exec_clearance_amani', role: 'Exec_Assistant', color: 'indigo', blueprint: 'SOC2_Type_II_Audit_Pipeline' },
       Family: { user: '@family_lead_amani', role: 'Family_Lead', color: 'emerald', blueprint: 'Household_Pacing_Schedule' }
@@ -145,7 +145,7 @@
       b.className = "text-emerald-400 font-bold text-[10px] uppercase bg-emerald-500/10 px-1.5 py-0.5 border border-emerald-500/20 rounded";
     }
     function switchPersona(p) {
-      var d = matrixPersonas[p];
+      var d = amaniPersonas[p];
       document.getElementById('profileUser').innerText = d.user;
       document.getElementById('profileUser').className = 'text-' + d.color + '-400 font-mono';
       document.getElementById('profileRole').innerText = d.role;
