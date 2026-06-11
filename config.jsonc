@@ -1,0 +1,9 @@
+{
+  "functions": {
+    "fetchGithubRepos": {
+      "path": "base44/functions/fetchGithubRepos/entry.ts",
+      "runtime": "deno"
+    }
+  },
+  "entities": {}
+}
