@@ -25,6 +25,29 @@ Deno.serve(async (req: Request) => {
   // Evaluates state dynamically. If WHOOP recovery falls under 45% or Oura under 50%, circuit breaks.
   const pipelineGated = metrics.whoop.recovery < 45 || metrics.oura.readiness < 50;
 
+  // =========================================================================
+  // 📥 MACHINE INGRESS: SECURE TRIPPING API FEED
+  // Intercepts requests immediately before rendering heavy HTML UI.
+  // =========================================================================
+  if (url.pathname === "/api/health-gate") {
+    const apiPayload = {
+      timestamp: new Date().toISOString(),
+      automationGated: pipelineGated,
+      telemetry: {
+        oura: { readinessScore: metrics.oura.readiness, status: metrics.oura.status },
+        whoop: { recoveryScore: metrics.whoop.recovery, status: metrics.whoop.status }
+      }
+    };
+    return new Response(JSON.stringify(apiPayload, null, 2), {
+      headers: { 
+        "Content-Type": "application/json; charset=utf-8",
+        "Access-Control-Allow-Origin": "*" 
+      },
+      status: 200
+    });
+  }
+  // =========================================================================
+
   // 🎛️ PERSONA MANAGEMENT REGISTER
   const personas: Record<string, { username: string; role: string; color: string; blueprint: string }> = {
     Developer: { username: 'amani_dev_matrix', role: 'System_Architect', color: 'cyan', blueprint: 'PCI_DSS_v4_Tokenization_Filter' },
