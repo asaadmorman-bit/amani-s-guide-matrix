@@ -1,11 +1,81 @@
-import { createClientFromRequest } from "npm:@base44/sdk";
-
-export default async function handler(req: Request): Promise<Response> {
+Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
   const currentPersona = url.searchParams.get("persona") || "Developer";
   const provider = url.searchParams.get("provider") || "";
   const token = url.searchParams.get("token") || "";
+  const authenticated = url.searchParams.get("auth") === "true";
 
+  // 🚪 PHASE 1: THE WELCOME / LOGIN GATEWAY LANDING PAGE
+  if (!authenticated) {
+    const landingHtml = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <title>AMANI GUIDE MATRIX // PORTAL</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+      </head>
+      <body class="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center antialiased font-sans p-4 relative overflow-hidden">
+        
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+        
+        <div class="max-w-md w-full bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-8 shadow-2xl space-y-8 relative z-10 text-center">
+          
+          <div class="space-y-3">
+            <div class="inline-flex items-center justify-center h-16 w-16 rounded-full bg-slate-950 border border-slate-800 shadow-[0_0_15px_rgba(34,211,238,0.15)] text-2xl">
+              🛡️
+            </div>
+            <h1 class="text-xl font-black font-mono tracking-widest text-slate-100 uppercase pt-2">
+              Amani Guide Matrix
+            </h1>
+            <p class="text-xs text-slate-400 max-w-xs mx-auto leading-relaxed">
+              Biometric-Responsive Workflow Orchestration Hub for high-consequence operational ecosystems.
+            </p>
+          </div>
+
+          <hr class="border-slate-800" />
+
+          <div class="space-y-2 text-left">
+            <div class="p-3 bg-slate-950/60 border border-slate-800/60 rounded-xl flex items-center gap-3">
+              <span class="text-cyan-400 font-mono text-sm">01</span>
+              <div>
+                <div class="text-xs font-bold font-mono text-slate-300">Biometric Guardrails</div>
+                <div class="text-[10px] text-slate-500">Live Oura/WHOOP stress pipeline gating.</div>
+              </div>
+            </div>
+            <div class="p-3 bg-slate-950/60 border border-slate-800/60 rounded-xl flex items-center gap-3">
+              <span class="text-indigo-400 font-mono text-sm">02</span>
+              <div>
+                <div class="text-xs font-bold font-mono text-slate-300">Adaptive UI Personas</div>
+                <div class="text-[10px] text-slate-500">Dynamic Developer, Executive, & Family views.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <a href="?auth=true&persona=Developer" class="block w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-center rounded-xl font-black text-xs py-3.5 tracking-widest uppercase font-mono shadow-lg shadow-cyan-500/15 transition-all transform active:scale-[0.98]">
+              Initialize Session Core
+            </a>
+            <div class="text-[10px] font-mono text-slate-600 mt-3 tracking-wider uppercase">FIDO2 Hardware Key Verification Standby</div>
+          </div>
+
+        </div>
+
+        <div class="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-md text-[11px] tracking-widest font-mono font-bold text-cyan-400 shadow-2xl uppercase z-50">
+          Technical
+        </div>
+
+      </body>
+      </html>
+    `;
+    return new Response(landingHtml, {
+      headers: { "Content-Type": "text/html; charset=utf-8" },
+      status: 200,
+    });
+  }
+
+  // 🖥️ PHASE 2: THE INTERACTIVE APPLICATION WORKSPACE DASHBOARD
   const personas: Record<string, any> = {
     Developer: {
       username: 'amani_dev_matrix',
@@ -41,8 +111,8 @@ export default async function handler(req: Request): Promise<Response> {
       <div class="space-y-3">
         <p class="text-xs text-slate-400">Sync live physiological telemetry to automatically gate automation pipelines based on user stress spikes:</p>
         <div class="grid grid-cols-1 gap-2 pt-1">
-          <a href="?persona=${currentPersona}&provider=oura&token=simulated_token" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-center rounded font-semibold text-xs py-2 transition">🦪 Link Oura Profile</a>
-          <a href="?persona=${currentPersona}&provider=whoop&token=simulated_token" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-center rounded font-semibold text-xs py-2 transition">🚀 Link WHOOP Profile</a>
+          <a href="?auth=true&persona=${currentPersona}&provider=oura&token=simulated_token" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-center rounded font-semibold text-xs py-2 transition">🦪 Link Oura Profile</a>
+          <a href="?auth=true&persona=${currentPersona}&provider=whoop&token=simulated_token" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-center rounded font-semibold text-xs py-2 transition">🚀 Link WHOOP Profile</a>
         </div>
       </div>
     `;
@@ -91,9 +161,9 @@ export default async function handler(req: Request): Promise<Response> {
         </div>
         
         <div class="bg-slate-950 border border-slate-800 p-1 rounded-lg flex gap-1">
-          <a href="?persona=Developer&token=${token}&provider=${provider}" class="px-3 py-1 rounded text-xs font-mono font-bold transition ${currentPersona === 'Developer' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-slate-200'}">Developer</a>
-          <a href="?persona=Executive&token=${token}&provider=${provider}" class="px-3 py-1 rounded text-xs font-mono font-bold transition ${currentPersona === 'Executive' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'text-slate-400 hover:text-slate-200'}">Executive</a>
-          <a href="?persona=Family&token=${token}&provider=${provider}" class="px-3 py-1 rounded text-xs font-mono font-bold transition ${currentPersona === 'Family' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400 hover:text-slate-200'}">Family</a>
+          <a href="?auth=true&persona=Developer&token=${token}&provider=${provider}" class="px-3 py-1 rounded text-xs font-mono font-bold transition ${currentPersona === 'Developer' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-slate-200'}">Developer</a>
+          <a href="?auth=true&persona=Executive&token=${token}&provider=${provider}" class="px-3 py-1 rounded text-xs font-mono font-bold transition ${currentPersona === 'Executive' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'text-slate-400 hover:text-slate-200'}">Executive</a>
+          <a href="?auth=true&persona=Family&token=${token}&provider=${provider}" class="px-3 py-1 rounded text-xs font-mono font-bold transition ${currentPersona === 'Family' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400 hover:text-slate-200'}">Family</a>
         </div>
       </header>
 
@@ -147,4 +217,4 @@ export default async function handler(req: Request): Promise<Response> {
     headers: { "Content-Type": "text/html; charset=utf-8" },
     status: 200,
   });
-}
+});
