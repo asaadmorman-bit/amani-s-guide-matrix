@@ -1,5 +1,5 @@
 {
-  "name": "Amani's Guide Matrix",
+  "name": "untitled",
   "site": {
     "installCommand": "npm install",
     "buildCommand": "npm run build",
