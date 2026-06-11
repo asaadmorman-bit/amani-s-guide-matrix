@@ -134,25 +134,25 @@
   <div class="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-md text-[11px] tracking-widest font-mono font-bold text-cyan-400 shadow-2xl uppercase">Technical</div>
 
   <script>
-    const personas = {
+    var matrixPersonas = {
       Developer: { user: '@amani_dev_matrix', role: 'System_Architect', color: 'cyan', blueprint: 'PCI_DSS_v4_Tokenization_Filter' },
       Executive: { user: '@exec_clearance_amani', role: 'Exec_Assistant', color: 'indigo', blueprint: 'SOC2_Type_II_Audit_Pipeline' },
       Family: { user: '@family_lead_amani', role: 'Family_Lead', color: 'emerald', blueprint: 'Household_Pacing_Schedule' }
     };
-    function enterWorkspace() { document.getElementById('portalGate').classList.add('hidden'); }
+    function enterWorkspace() { document.getElementById('portalGate').style.display = 'none'; }
     function verifyKey() {
-      const b = document.getElementById('keyStatus'); b.innerText = "VERIFIED_AUTH";
-      b.className = "text-emerald-400 font-bold text-[10px] uppercase bg-emerald-500/10 px-1.5 py-0.5 border border-emerald-500/20 rounded shadow-[0_0_8px_rgba(52,211,153,0.2)]";
+      var b = document.getElementById('keyStatus'); b.innerText = "VERIFIED_AUTH";
+      b.className = "text-emerald-400 font-bold text-[10px] uppercase bg-emerald-500/10 px-1.5 py-0.5 border border-emerald-500/20 rounded";
     }
     function switchPersona(p) {
-      const d = personas[p];
+      var d = matrixPersonas[p];
       document.getElementById('profileUser').innerText = d.user;
       document.getElementById('profileUser').className = 'text-' + d.color + '-400 font-mono';
       document.getElementById('profileRole').innerText = d.role;
       document.getElementById('profileBlueprint').innerText = d.blueprint;
-      document.getElementById('statusDot').className = 'h-2.5 w-2.5 rounded-full bg-' + d.color + '-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]';
-      ['Developer', 'Executive', 'Family'].forEach(x => {
-        const btn = document.getElementById('btn-' + x);
+      document.getElementById('statusDot').className = 'h-2.5 w-2.5 rounded-full bg-' + d.color + '-400';
+      ['Developer', 'Executive', 'Family'].forEach(function(x) {
+        var btn = document.getElementById('btn-' + x);
         if(x === p) { btn.className = 'px-3 py-1 rounded text-xs font-mono font-bold transition bg-' + d.color + '-500/10 text-' + d.color + '-400 border border-' + d.color + '-500/20'; }
         else { btn.className = "px-3 py-1 rounded text-xs font-mono font-bold transition text-slate-400"; }
       });
