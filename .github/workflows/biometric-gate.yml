@@ -1,0 +1,47 @@
+name: "🛡️ AMANI MATRIX // PRE-FLIGHT BIOMETRIC GUARD"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  evaluate-health-gate:
+    name: "Intercept & Verify Physiological States"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Fetch Live Telemetry Matrix Token"
+        id: check_gate
+        run: |
+          echo "📡 Querying Amani Guide Matrix at endpoint..."
+          # Securely fetch the live JSON state payload from your Deno backend
+          RESPONSE=$(curl -s "${{ secrets.BIOMETRIC_GATE_URL }}")
+          
+          # Parse out the automationGated boolean flag using standard shell scripting
+          GATED=$(echo "$RESPONSE" | grep -o '"automationGated":\s*[a-z]*' | cut -d: -f2 | xargs)
+          echo "Automation Gated Status: $GATED"
+          
+          # Set an environment variable output string to pass down to subsequent build steps
+          echo "gated=$GATED" >> $GITHUB_OUTPUT
+
+      - name: "Evaluate Health Threshold Guardrails"
+        if: steps.check_gate.outputs.gated == 'true'
+        run: |
+          echo "======================================================================"
+          echo "🚨 CRITICAL PIPELINE INTERCEPT VIA PHYSIOLOGICAL CIRCUIT BREAKER 🚨"
+          echo "======================================================================"
+          echo "WARNING: Live wearable telemetry indicators show severe fatigue levels."
+          echo "Current recovery parameters have fallen beneath established safe ceilings."
+          echo "Execution of automated deployment builds has been locked down."
+          echo "To override, authorize session via physical FIDO2 secure matrix token."
+          echo "======================================================================"
+          # Throw an exit code 1 to intentionally crash the GitHub Action run
+          exit 1
+
+      - name: "Proceed with Build Matrix"
+        if: steps.check_gate.outputs.gated == 'false'
+        run: |
+          echo "✓ Physiological telemetry processing normal."
+          echo "✓ All core operational pipelines clear for compilation routines."
