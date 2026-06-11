@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import CommitSyncPanel from '../components/governance/CommitSyncPanel';
 
 export default function UserHomepage() {
   // Catch incoming tokens straight from the OAuth redirect parameters
@@ -163,6 +164,9 @@ export default function UserHomepage() {
               </div>
             )}
           </section>
+
+          {/* 🔗 GitHub Governance Sync */}
+          <CommitSyncPanel />
 
           {/* 🔑 Cryptographic Hardware Keys Keyring */}
           <section className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
