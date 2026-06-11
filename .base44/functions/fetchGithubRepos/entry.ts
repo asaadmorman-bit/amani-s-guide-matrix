@@ -5,18 +5,20 @@ Deno.serve(async (req: Request) => {
   const currentPersona = url.searchParams.get("persona") || "Developer";
   const authenticated = url.searchParams.get("auth") === "true";
 
-  // 📡 BIOMETRIC INGRESS (Wired for query overrides or production API mapping)
+  // 📡 NATIVE BASE44 TELEMETRY BINDING OVERRIDES
+  // Checks if Base44 has injected live tokens into global variable scopes.
+  // Falls back gracefully to your URL parameters or stable test definitions.
+  const liveOuraSleep = Number(globalThis?.Base44?.metrics?.oura?.sleepScore) || Number(url.searchParams.get("oura_sleep")) || 82;
+  const liveOuraReady = Number(globalThis?.Base44?.metrics?.oura?.readiness) || Number(url.searchParams.get("oura_ready")) || 78;
+  const liveOuraStatus = globalThis?.Base44?.metrics?.oura?.status || url.searchParams.get("oura_status") || "NOMINAL";
+
+  const liveWhoopStrain = Number(globalThis?.Base44?.metrics?.whoop?.strain) || Number(url.searchParams.get("whoop_strain")) || 14.2;
+  const liveWhoopRecover = Number(globalThis?.Base44?.metrics?.whoop?.recovery) || Number(url.searchParams.get("whoop_recover")) || 42;
+  const liveWhoopStatus = globalThis?.Base44?.metrics?.whoop?.status || url.searchParams.get("whoop_status") || "WARNING";
+
   const metrics = {
-    oura: { 
-      sleepScore: Number(url.searchParams.get("oura_sleep")) || 82, 
-      readiness: Number(url.searchParams.get("oura_ready")) || 78, 
-      status: url.searchParams.get("oura_status") || "NOMINAL" 
-    },
-    whoop: { 
-      strain: Number(url.searchParams.get("whoop_strain")) || 14.2, 
-      recovery: Number(url.searchParams.get("whoop_recover")) || 42, 
-      status: url.searchParams.get("whoop_status") || "WARNING" 
-    }
+    oura: { sleepScore: liveOuraSleep, readiness: liveOuraReady, status: liveOuraStatus },
+    whoop: { strain: liveWhoopStrain, recovery: liveWhoopRecover, status: liveWhoopStatus }
   };
 
   // 🚨 AUTOMATION TRIPPING CIRCUIT CRITERIA
@@ -131,12 +133,12 @@ Deno.serve(async (req: Request) => {
               <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
             </div>
             <div class="space-y-1.5 text-[11px] leading-relaxed max-h-28 overflow-y-auto pt-1 text-slate-400">
-              <div><span class="text-slate-600">[13:42:01]</span> <span class="text-cyan-400 font-bold">INFO:</span> Initializing Deno serverless edge execution layer... <span class="text-emerald-400">SUCCESS</span></div>
-              <div><span class="text-slate-600">[13:42:02]</span> <span class="text-cyan-400 font-bold">INFO:</span> Listening on global ingress routing gateway proxy hooks.</div>
-              <div><span class="text-slate-600">[13:45:14]</span> <span class="text-indigo-400 font-bold">RECV:</span> Ingesting physiological telemetry webhook array from provider: <span class="text-slate-200">WHOOP_STRAP_4_0</span></div>
-              <div><span class="text-slate-600">[13:45:15]</span> <span class="text-amber-400 font-bold">WARN:</span> Recovery value processed at <span class="text-rose-400 font-bold">${metrics.whoop.recovery}%</span> (Threshold ceiling: 45%).</div>
+              <div><span class="text-slate-600">[14:02:11]</span> <span class="text-cyan-400 font-bold">INFO:</span> Initializing Deno serverless edge execution layer... <span class="text-emerald-400">SUCCESS</span></div>
+              <div><span class="text-slate-600">[14:02:12]</span> <span class="text-cyan-400 font-bold">INFO:</span> Listening on global ingress routing gateway proxy hooks.</div>
+              <div><span class="text-slate-600">[14:05:14]</span> <span class="text-indigo-400 font-bold">RECV:</span> Ingesting physiological telemetry webhook array from compiled Base44 source.</div>
+              <div><span class="text-slate-600">[14:05:15]</span> <span class="text-amber-400 font-bold">WARN:</span> Recovery value processed at <span class="text-rose-400 font-bold">${metrics.whoop.recovery}%</span> (Threshold ceiling: 45%).</div>
               <div class="text-rose-400 font-bold bg-rose-500/5 p-1 rounded border border-rose-500/10 ${pipelineGated ? 'block animate-pulse' : 'hidden'}">
-                <span class="text-slate-600">[13:45:15]</span> [INTERCEPT] Gating active execution pipelines. Tripping Human-in-the-Loop circuit breaker token.
+                <span class="text-slate-600">[14:05:15]</span> [INTERCEPT] Gating active execution pipelines. Tripping Human-in-the-Loop circuit breaker token.
               </div>
             </div>
           </section>
