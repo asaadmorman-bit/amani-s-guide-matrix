@@ -1,27 +1,45 @@
 Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
+  
+  // 🧭 PERSISTENT APP STATE LAYER
   const currentPersona = url.searchParams.get("persona") || "Developer";
-  const provider = url.searchParams.get("provider") || "all";
-  const token = url.searchParams.get("token") || "active";
   const authenticated = url.searchParams.get("auth") === "true";
 
-  // Mocked physiological parameters for demonstration
+  // 📡 BIOMETRIC INGRESS (Wired for query overrides or production API mapping)
   const metrics = {
-    oura: { sleepScore: 82, readiness: 78, rhr: 58, hrv: 68, status: "NOMINAL" },
-    whoop: { strain: 14.2, recovery: 42, rhr: 64, hrv: 52, status: "WARNING" }
+    oura: { 
+      sleepScore: Number(url.searchParams.get("oura_sleep")) || 82, 
+      readiness: Number(url.searchParams.get("oura_ready")) || 78, 
+      status: url.searchParams.get("oura_status") || "NOMINAL" 
+    },
+    whoop: { 
+      strain: Number(url.searchParams.get("whoop_strain")) || 14.2, 
+      recovery: Number(url.searchParams.get("whoop_recover")) || 42, 
+      status: url.searchParams.get("whoop_status") || "WARNING" 
+    }
   };
 
-  // Determine automation trigger threshold status based on combined metrics
-  // If WHOOP recovery falls below 45%, automation pipelines automatically gate
-  const pipelineGated = metrics.whoop.recovery < 45;
+  // 🚨 AUTOMATION TRIPPING CIRCUIT CRITERIA
+  // Evaluates state dynamically. If WHOOP recovery falls under 45% or Oura under 50%, circuit breaks.
+  const pipelineGated = metrics.whoop.recovery < 45 || metrics.oura.readiness < 50;
 
-  // 🚪 PHASE 1: WELCOME GATEWAY
+  // 🎛️ PERSONA MANAGEMENT REGISTER
+  const personas: Record<string, { username: string; role: string; color: string; blueprint: string }> = {
+    Developer: { username: 'amani_dev_matrix', role: 'System_Architect', color: 'cyan', blueprint: 'PCI_DSS_v4_Tokenization_Filter' },
+    Executive: { username: 'exec_clearance_amani', role: 'Exec_Assistant', color: 'indigo', blueprint: 'SOC2_Type_II_Audit_Pipeline' },
+    Family: { username: 'family_lead_amani', role: 'Family_Lead', color: 'emerald', blueprint: 'Household_Pacing_Schedule' }
+  };
+
+  const active = personas[currentPersona] || personas.Developer;
+
+  // 🚪 GATEWAY 1: THE UNAUTHENTICATED PUBLIC PORTAL
   if (!authenticated) {
     const landingHtml = `
       <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>AMANI GUIDE MATRIX // PORTAL</title>
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
@@ -37,46 +55,47 @@ Deno.serve(async (req: Request) => {
           </div>
           <hr class="border-slate-800" />
           <div class="pt-2">
-            <a href="?auth=true&persona=Developer" class="block w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-center rounded-xl font-black text-xs py-3.5 tracking-widest uppercase font-mono shadow-lg shadow-cyan-500/15 transition-all">
+            <button onclick="clearanceRedirect()" class="w-full block bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-center rounded-xl font-black text-xs py-3.5 tracking-widest uppercase font-mono shadow-lg shadow-cyan-500/15 transition-all">
               Initialize Session Core
-            </a>
+            </button>
           </div>
         </div>
+        <script>
+          function clearanceRedirect() {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set("auth", "true");
+            currentUrl.searchParams.set("persona", "Developer");
+            window.location.href = currentUrl.toString();
+          }
+        </script>
       </body>
       </html>
     `;
-    return new Response(landingHtml, { headers: { "Content-Type": "text/html" }, status: 200 });
+    return new Response(landingHtml, { headers: { "Content-Type": "text/html; charset=utf-8" }, status: 200 });
   }
 
-  // 🖥️ PHASE 2: CORE WORKSPACE
-  const personas: Record<string, any> = {
-    Developer: { username: 'amani_dev_matrix', role: 'System_Architect', color: 'cyan', blueprint: 'PCI_DSS_v4_Tokenization_Filter' },
-    Executive: { username: 'exec_clearance_amani', role: 'Exec_Assistant', color: 'indigo', blueprint: 'SOC2_Type_II_Audit_Pipeline' },
-    Family: { username: 'family_lead_amani', role: 'Family_Lead', color: 'emerald', blueprint: 'Household_Pacing_Schedule' }
-  };
-
-  const active = personas[currentPersona] || personas.Developer;
-
-  const html = `
+  // 🖥️ GATEWAY 2: CORE MONITOR MATRIX WORKSPACE
+  const dashboardHtml = `
     <!DOCTYPE html>
     <html lang="en">
     <head>
       <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>AMANI MATRIX WORKSPACE</title>
       <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col antialiased font-sans">
+    <body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col antialiased font-sans relative select-none">
       
       <header class="border-b border-slate-800 bg-slate-900/40 backdrop-blur sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <div class="h-2.5 w-2.5 rounded-full bg-${active.color}-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]"></div>
+          <div class="h-2.5 w-2.5 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.5)] bg-${active.color}-400"></div>
           <h1 class="text-base font-bold tracking-wider font-mono text-slate-200">AMANI // WORKSPACE CORE</h1>
         </div>
         
         <div class="bg-slate-950 border border-slate-800 p-1 rounded-lg flex gap-1">
-          <a href="?auth=true&persona=Developer" class="px-3 py-1 rounded text-xs font-mono font-bold transition ${currentPersona === 'Developer' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400'}">Developer</a>
-          <a href="?auth=true&persona=Executive" class="px-3 py-1 rounded text-xs font-mono font-bold transition ${currentPersona === 'Executive' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'text-slate-400'}">Executive</a>
-          <a href="?auth=true&persona=Family" class="px-3 py-1 rounded text-xs font-mono font-bold transition ${currentPersona === 'Family' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400'}">Family</a>
+          <button onclick="updatePersona('Developer')" class="px-3 py-1 rounded text-xs font-mono font-bold transition ${currentPersona === 'Developer' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-400'}">Developer</button>
+          <button onclick="updatePersona('Executive')" class="px-3 py-1 rounded text-xs font-mono font-bold transition ${currentPersona === 'Executive' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'text-slate-400'}">Executive</button>
+          <button onclick="updatePersona('Family')" class="px-3 py-1 rounded text-xs font-mono font-bold transition ${currentPersona === 'Family' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400'}">Family</button>
         </div>
       </header>
 
@@ -115,8 +134,8 @@ Deno.serve(async (req: Request) => {
               <div><span class="text-slate-600">[13:42:01]</span> <span class="text-cyan-400 font-bold">INFO:</span> Initializing Deno serverless edge execution layer... <span class="text-emerald-400">SUCCESS</span></div>
               <div><span class="text-slate-600">[13:42:02]</span> <span class="text-cyan-400 font-bold">INFO:</span> Listening on global ingress routing gateway proxy hooks.</div>
               <div><span class="text-slate-600">[13:45:14]</span> <span class="text-indigo-400 font-bold">RECV:</span> Ingesting physiological telemetry webhook array from provider: <span class="text-slate-200">WHOOP_STRAP_4_0</span></div>
-              <div><span class="text-slate-600">[13:45:15]</span> <span class="text-amber-400 font-bold">WARN:</span> Recovery value dropped to <span class="text-rose-400 font-bold">42%</span> (Threshold ceiling: 45%).</div>
-              <div class="text-rose-400 font-bold bg-rose-500/5 p-1 rounded border border-rose-500/10 animate-pulse">
+              <div><span class="text-slate-600">[13:45:15]</span> <span class="text-amber-400 font-bold">WARN:</span> Recovery value processed at <span class="text-rose-400 font-bold">${metrics.whoop.recovery}%</span> (Threshold ceiling: 45%).</div>
+              <div class="text-rose-400 font-bold bg-rose-500/5 p-1 rounded border border-rose-500/10 ${pipelineGated ? 'block animate-pulse' : 'hidden'}">
                 <span class="text-slate-600">[13:45:15]</span> [INTERCEPT] Gating active execution pipelines. Tripping Human-in-the-Loop circuit breaker token.
               </div>
             </div>
@@ -187,6 +206,12 @@ Deno.serve(async (req: Request) => {
       </main>
 
       <script>
+        function updatePersona(targetPersona) {
+          const currentUrl = new URL(window.location.href);
+          currentUrl.searchParams.set("persona", targetPersona);
+          window.location.href = currentUrl.toString();
+        }
+
         function verifyKey() {
           const badge = document.getElementById('keyStatus');
           badge.innerText = "VERIFIED_AUTH";
@@ -195,12 +220,12 @@ Deno.serve(async (req: Request) => {
       </script>
 
       <div class="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-md text-[11px] tracking-widest font-mono font-bold text-cyan-400 shadow-2xl uppercase z-50">
-        Technical
+        Technical Stable Core
       </div>
 
     </body>
     </html>
   `;
 
-  return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" }, status: 200 });
+  return new Response(dashboardHtml, { headers: { "Content-Type": "text/html; charset=utf-8" }, status: 200 });
 });
