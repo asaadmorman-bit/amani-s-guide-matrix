@@ -1,39 +1,16 @@
-# ─── AMANI SECURE INFRASTRUCTURE VAULTS ─────────────────────────────
-# Prevents local WebAssembly relational data engines from leaking to GitHub
-base_amani_vault_data/
-*.db
-*.db-journal
-/src/config/integration_*.json
-/release/
-
-# ─── ENVIRONMENT & SECRET TOKENS ──────────────────────────────────
+# Local Environment Overrides
 .env
-.env.*
 .env.local
-.vite
 
-# ─── COMPILATION BUILD OUTPUTS ────────────────────────────────────
-node_modules
-dist
-dist-ssr
-/src/generated/prisma
+# Deno Cache & Runtime Files
+.deno/
+deno.lock
 
-# ─── PACKAGE MANAGER LOGS ─────────────────────────────────────────
-/logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Cloudflare Temporary Tunnel Executables
+.trycloudflare/
+node_modules/
+package-lock.json
 
-# ─── SYSTEM & EDITOR DIRECTORIES ──────────────────────────────────
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Operating System Trash Files
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
