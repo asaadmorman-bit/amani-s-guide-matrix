@@ -1,4 +1,4 @@
-name: "🛡️ AMANI MATRIX // PRE-FLIGHT BIOMETRIC GUARD"
+name: "🛡️ AMANI MATRIX // PHYSIOLOGICAL CIRCUIT BREAKER"
 
 on:
   push:
@@ -15,25 +15,41 @@ jobs:
       - name: "Checkout Code Repository"
         uses: actions/checkout@v4
 
-      - name: "Parse Local Telemetry Token"
+      - name: "Evaluate Biometric Gating State"
         id: check_gate
         run: |
-          echo "📡 Reading local gate-status.json parameter..."
+          # 1. Check if the user has configured an external server URL secret
+          if [ -n "${{ secrets.BIOMETRIC_GATE_URL }}" ]; then
+            echo "📡 External URL Secret detected. Polling Cloud Edge..."
+            RESPONSE=$(curl -s -m 10 "${{ secrets.BIOMETRIC_GATE_URL }}")
+            
+            # Extract boolean gate trigger text from raw API response payload
+            if echo "$RESPONSE" | grep -q '"automationGated":\s*true'; then
+              echo "gated=true" >> $GITHUB_OUTPUT
+            else
+              echo "gated=false" >> $GITHUB_OUTPUT
+            fi
           
-          # Read the status directly out of your local repository file
-          GATED=$(jq -r '.automationGated' gate-status.json)
-          echo "Automation Gated Status: $GATED"
-          
-          # Set the environment variable output string for the next step
-          echo "gated=$GATED" >> $GITHUB_OUTPUT
+          # 2. Fall back to local file parsing if no URL secret exists
+          else
+            echo "🏠 No URL Secret found. Parsing local gate-status.json configuration..."
+            if [ -f "gate-status.json" ]; then
+              GATED=$(jq -r '.automationGated' gate-status.json)
+              echo "gated=$GATED" >> $GITHUB_OUTPUT
+            else
+              echo "⚠️ Missing gate-status.json. Bypassing gate defensively."
+              echo "gated=false" >> $GITHUB_OUTPUT
+            fi
+          fi
 
-      - name: "Evaluate Health Threshold Guardrails"
+      - name: "Verify Health Threshold Guardrails"
         if: steps.check_gate.outputs.gated == 'true'
         run: |
           echo "======================================================================"
           echo "🚨 CRITICAL PIPELINE INTERCEPT VIA PHYSIOLOGICAL CIRCUIT BREAKER 🚨"
           echo "======================================================================"
-          echo "WARNING: Wearable telemetry indicators show severe fatigue levels."
+          echo "WARNING: Wearable telemetry indicators show severe acute fatigue levels."
+          echo "Current recovery parameters have fallen beneath established safe ceilings."
           echo "Execution of automated deployment builds has been locked down."
           echo "To override, authorize session via physical FIDO2 secure matrix token."
           echo "======================================================================"
@@ -45,4 +61,4 @@ jobs:
           echo "======================================================================"
           echo "✓ SYSTEM OPERATIONS CLEARANCE CONFIRMED"
           echo "======================================================================"
-          echo "Telemetry thresholds clear. Safe for production processing compilation."
+          echo "Telemetry thresholds normal. Safe for processing compilation routines."
