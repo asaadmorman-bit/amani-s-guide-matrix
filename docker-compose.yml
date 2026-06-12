@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  amani-matrix:
+    build: .
+    container_name: amani_core_gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - WHOOP_ACCESS_TOKEN=${WHOOP_ACCESS_TOKEN:-mock}
+      - OURA_PERSONAL_ACCESS_TOKEN=${OURA_PERSONAL_ACCESS_TOKEN:-mock}
+    restart: unless-stopped
