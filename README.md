@@ -21,6 +21,31 @@ The core system processes raw biometric data feeds to dynamically calculate infr
                 - Developer Mode                  - Intercepts Code Pushes
                 - Executive Clearance             - Fails Fatigued Commits
                 - Family Safe View                - Demands FIDO2 Hardware Key
+🚀 Quick-Start Deployment Options
+This framework is built for maximum flexibility, providing two separate deployment models depending on your development sandbox or production goals.
+
+🏠 Option A: Local Quick-Tunnel (Simplest)
+Best for rapid testing, local terminal desks, or working around corporate network firewalls. This method boots up your core application locally and generates a secure public tunnel address via Cloudflare.
+
+Navigate to your local project directory.
+
+Grant execution rights and boot the automated startup script:
+
+Bash
+chmod +x dev.sh && ./dev.sh
+Copy the temporary generated secure link (e.g., https://*.trycloudflare.com) out of your terminal and save it directly inside your GitHub Secrets to support live workflows.
+
+🐋 Option B: Containerized Cloud Deployment (Production)
+Best for permanent virtual private servers (VPS), persistent edge deployments, and enterprise automation hubs. This packages your Deno core into an isolated, non-root system wrapper.
+
+Configure your environment variables inside a localized .env template.
+
+Boot up your container stack using Docker Compose:
+
+Bash
+docker-compose up -d
+Map your server's static IP or customized custom domain (https://your-domain.com/api/health-gate) directly to your system integration workflows.
+
 🧪 Simulation & Parameters Override
 The engine supports dynamic query-string parameters natively. This allows system administrators to easily simulate physiological fatigue scenarios or clear gated blocks right inside the browser window without waiting for physical metric data changes:
 
