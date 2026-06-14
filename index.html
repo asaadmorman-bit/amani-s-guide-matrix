@@ -1,164 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AMANI GUIDE MATRIX // PLATFORM CORE</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amani Multi-Agent Strategy Matrix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
-<body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col antialiased font-sans relative">
+<body class="bg-slate-950 text-slate-100 antialiased font-sans">
+    <div id="root"></div>
 
-  <div id="portalGate" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-4">
-    <div class="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
-    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
-    
-    <div class="max-w-md w-full bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-8 shadow-2xl space-y-8 text-center relative">
-      <div class="space-y-3">
-        <div class="inline-flex items-center justify-center h-16 w-16 rounded-full bg-slate-950 border border-slate-800 shadow-[0_0_15px_rgba(34,211,238,0.15)] text-2xl">🛡️</div>
-        <h1 class="text-xl font-black font-mono tracking-widest text-slate-100 uppercase pt-2">Amani Guide Matrix</h1>
-        <p class="text-xs text-slate-400 max-w-xs mx-auto leading-relaxed">Biometric-Responsive Workflow Orchestration Hub.</p>
-      </div>
-      <hr class="border-slate-800" />
-      <button onclick="enterWorkspace()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-center rounded-xl font-black text-xs py-3.5 tracking-widest uppercase font-mono shadow-lg shadow-cyan-500/15 transition-all transform active:scale-95">
-        Initialize Session Core
-      </button>
-    </div>
-  </div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-  <header class="border-b border-slate-800 bg-slate-900/40 backdrop-blur sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
-    <div class="flex items-center space-x-3">
-      <div id="statusDot" class="h-2.5 w-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]"></div>
-      <h1 class="text-base font-bold tracking-wider font-mono text-slate-200">AMANI // WORKSPACE CORE</h1>
-    </div>
-    
-    <div class="bg-slate-950 border border-slate-800 p-1 rounded-lg flex gap-1">
-      <button onclick="switchPersona('Developer')" id="btn-Developer" class="px-3 py-1 rounded text-xs font-mono font-bold transition bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Developer</button>
-      <button onclick="switchPersona('Executive')" id="btn-Executive" class="px-3 py-1 rounded text-xs font-mono font-bold transition text-slate-400">Executive</button>
-      <button onclick="switchPersona('Family')" id="btn-Family" class="px-3 py-1 rounded text-xs font-mono font-bold transition text-slate-400">Family</button>
-    </div>
-  </header>
+        function App() {
+          const [systemState, setSystemState] = useState({ initialized: false, profiles: [] });
+          const [activeProfile, setActiveProfile] = useState(null);
+          const [dashboardData, setDashboardData] = useState({ trackedParameters: [], customAgents: [], strategyAssets: [], activeTasks: [] });
+          const [loading, setLoading] = useState(true);
 
-  <main class="flex-1 p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
-    
-    <div class="lg:col-span-2 space-y-6">
-      
-      <section class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
-        <span id="profileRole" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-slate-300 uppercase">System_Architect</span>
-        <h2 class="text-xl font-black mt-2">Authorized Profile: <span id="profileUser" class="text-cyan-400 font-mono">@amani_dev_matrix</span></h2>
-      </section>
+          // Onboarding Wizard configurations
+          const [onboardType, setOnboardType] = useState('both'); 
+          const [socialChannels, setSocialChannels] = useState({ X: true, YouTube: false, LinkedIn: true });
+          const [targetMonthlyBudget, setTargetMonthlyBudget] = useState('5000');
 
-      <section class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono">Active Target Execution Matrix</h3>
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 animate-pulse">⚠️ PIPELINES_GATED</span>
-        </div>
-        <div class="bg-slate-950 p-4 border border-slate-800/60 rounded-xl flex items-center justify-between">
-          <div>
-            <div id="profileBlueprint" class="font-mono text-sm text-slate-200">PCI_DSS_v4_Tokenization_Filter</div>
-            <div class="text-[10px] text-slate-500 font-mono mt-0.5">Deployment Engine Strategy State</div>
-          </div>
-          <span class="px-2.5 py-0.5 rounded font-mono text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">PAUSED_HITL</span>
-        </div>
-      </section>
+          // Inputs form variables
+          const [inputCat, setInputCat] = useState('Workflows');
+          const [inputName, setInputName] = useState('');
+          const [inputValue, setInputValue] = useState('');
+          const [agentName, setAgentName] = useState('');
+          const [agentPurpose, setAgentPurpose] = useState('');
+          const [genToken, setGenToken] = useState('');
 
-      <section class="bg-slate-955 border border-slate-800 bg-slate-950/60 rounded-xl p-5 shadow-inner font-mono text-xs space-y-2">
-        <div class="flex items-center justify-between text-[10px] text-slate-500 uppercase tracking-widest border-b border-slate-900 pb-2">
-          <span>SYSTEM LOG STREAM // SUB-LATENCY POLLING</span>
-          <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        </div>
-        <div class="space-y-1.5 text-[11px] leading-relaxed max-h-28 overflow-y-auto pt-1 text-slate-400">
-          <div><span class="text-slate-600">[13:42:01]</span> <span class="text-cyan-400 font-bold">INFO:</span> Initializing production edge execution layers... <span class="text-emerald-400">SUCCESS</span></div>
-          <div><span class="text-slate-600">[13:45:14]</span> <span class="text-indigo-400 font-bold">RECV:</span> Ingesting wearable sync telemetry webhook data from <span class="text-slate-200">WHOOP_STRAP_4_0</span></div>
-          <div><span class="text-slate-600">[13:45:15]</span> <span class="text-amber-400 font-bold">WARN:</span> Recovery value dropped to <span class="text-rose-400 font-bold">42%</span> (Threshold ceiling: 45%).</div>
-          <div class="text-rose-400 font-bold bg-rose-500/5 p-1 rounded border border-rose-500/10 animate-pulse">
-            <span class="text-slate-600">[13:45:15]</span> [INTERCEPT] Gating execution pipelines. Tripping Human-in-the-Loop circuit breaker token.
-          </div>
-        </div>
-      </section>
-    </div>
+          const checkSystemInit = async () => {
+            const res = await fetch('/api/system-status');
+            const data = await res.json();
+            setSystemState(data);
+            if(data.initialized && data.profiles.length > 0) {
+              const defaultProfile = data.profiles[0];
+              setActiveProfile(defaultProfile);
+              loadProfileData(defaultProfile.id);
+            }
+            setLoading(false);
+          };
 
-    <div class="space-y-6">
-      <section class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl space-y-4">
-        <h3 class="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono">Live Wearable Sync</h3>
-        
-        <div class="bg-slate-950 p-3.5 border border-slate-800 rounded-xl space-y-2">
-          <div class="flex justify-between items-center">
-            <span class="text-xs font-bold text-slate-200 font-mono flex items-center gap-1.5">🦪 Oura Ring Gen3</span>
-            <span class="text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 rounded">NOMINAL</span>
-          </div>
-          <div class="grid grid-cols-2 gap-2 text-center">
-            <div class="bg-slate-900/50 p-2 rounded border border-slate-800/40">
-              <div class="text-[9px] text-slate-500 uppercase tracking-wider">Readiness</div>
-              <div class="text-sm font-mono font-bold text-emerald-400">78%</div>
+          const loadProfileData = async (profileId) => {
+            const res = await fetch(`/api/state/${profileId}`);
+            const data = await res.json();
+            setDashboardData(data);
+          };
+
+          useEffect(() => { checkSystemInit(); }, []);
+
+          const executeOnboarding = async () => {
+            setLoading(true);
+            const profilesSetup = [];
+
+            if (onboardType === 'business' || onboardType === 'both') {
+              profilesSetup.push({
+                name: "Business & Content Operations",
+                description: "Strategy, Production Metrics, Posting Frequency & Market Monitoring",
+                category: "Business",
+                parameters: [
+                  { name: "Content Suggestion Queue", value: "3 Fresh Drafts Generated" },
+                  { name: "Current Market Trends Index", value: "AI Agents/Automation Uptrending" },
+                  { name: "Global Posting Status", value: "Frequency: 2x Daily Active" }
+                ],
+                agents: [
+                  { name: "SocialPostingAgent", purpose: "Manages social queues, timing configurations, and cross-posting automation" },
+                  { name: "TrendScraperNode", purpose: "Polls RSS and API vectors for trending industry topics" },
+                  { name: "StrategyOptimizer", purpose: "Evaluates conversion frequency, duration metrics, and workflow bottlenecks" }
+                ],
+                initialStrategy: {
+                  target_frequency: "2 posts per day",
+                  monitored_sectors: "AI Automation, Content Distribution, SaaS Metrics",
+                  target_duration_avg: "45-second short form vertical"
+                }
+              });
+            }
+
+            if (onboardType === 'life' || onboardType === 'both') {
+              profilesSetup.push({
+                name: "Life Structure & Family Architecture",
+                description: "Personal Finances, Budgets, Goals, Family Coordination, Time Optimization",
+                category: "Lifestyle",
+                parameters: [
+                  { name: "Operational Budget Track", value: `$${targetMonthlyBudget}/mo Max Threshold` },
+                  { name: "Family Calendar Core Sync", value: "Nominal Sync Connection Stable" },
+                  { name: "Core Milestone Matrix Goals", value: "Quarterly Strategy Setup Active" }
+                ],
+                agents: [
+                  { name: "FinancialAuditNode", purpose: "Scrapes incoming receipts, analyzes expenditures, alerts balance locks" },
+                  { name: "TimeManagementOptimizer", purpose: "Performs calendar parsing to shield screen-free down-time blocks" },
+                  { name: "FamilySyncAgent", purpose: "Automates task assignment and reminders across shared ecosystem channels" }
+                ],
+                initialStrategy: {
+                  monthly_budget_cap: `$${targetMonthlyBudget}`,
+                  time_management_priority: "Prioritize screen-free domestic wind-down blocks starting 7 PM",
+                  core_year_goals: "Build out autonomous sovereign hosting grid infrastructure"
+                }
+              });
+            }
+
+            await fetch('/api/onboarding/initialize', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ profilesSetup })
+            });
+            await checkSystemInit();
+          };
+
+          const dispatchTaskPulse = async (type, payloadText, agent) => {
+            await fetch('/api/tasks/dispatch', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                profileId: activeProfile.id,
+                taskType: type,
+                assignedAgent: agent,
+                payload: { action: payloadText }
+              })
+            });
+            loadProfileData(activeProfile.id);
+          };
+
+          const addCustomField = async (e) => {
+            e.preventDefault();
+            const res = await fetch('/api/fields', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ profileId: activeProfile.id, category: inputCat, name: inputName, value: inputValue })
+            });
+            const data = await res.json();
+            setDashboardData(prev => ({ ...prev, trackedParameters: data.trackedParameters }));
+            setInputName(''); setInputValue('');
+          };
+
+          const registerAgent = async (e) => {
+            e.preventDefault();
+            const res = await fetch('/api/agents/register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ profileId: activeProfile.id, name: agentName, purpose: agentPurpose })
+            });
+            const data = await res.json();
+            setGenToken(data.token);
+            setAgentName(''); setAgentPurpose('');
+            loadProfileData(activeProfile.id);
+          };
+
+          if (loading) return <div className="p-8 text-center font-mono text-slate-500">Connecting to Core Matrix Database Grid...</div>;
+
+          // SYSTEM SETUP ONBOARDING VIEWPORT
+          if (!systemState.initialized) {
+            return (
+              <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
+                <div className="max-w-xl w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 space-y-6 font-mono shadow-2xl">
+                  <div className="border-b border-slate-800 pb-4">
+                    <h1 className="text-md font-black tracking-widest text-cyan-400">AMANI // ARCHITECTURE SETTING SYSTEM</h1>
+                    <p className="text-[10px] text-slate-500 uppercase mt-1">Configure Strategic Matrix Core Profiles & Use Cases</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs text-slate-400 block font-bold uppercase tracking-wider">1. Select Target Use-Case Deployment Strategy:</label>
+                    <select value={onboardType} onChange={(e) => setOnboardType(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 outline-none">
+                      <option value="both">All-in-One Engine (Business Strategy, Content Postings, Budget, Family Sync)</option>
+                      <option value="business">Business & Content Operations Shell Only (Trends, Postings, Analytics)</option>
+                      <option value="life">Life Structure & Family Architecture Shell Only (Finances, Goals, Timelines)</option>
+                    </select>
+                  </div>
+
+                  {(onboardType === 'business' || onboardType === 'both') && (
+                    <div className="space-y-2 p-4 bg-slate-950/50 border border-slate-800 rounded-xl space-y-3">
+                      <label className="text-[11px] text-cyan-400 font-bold block uppercase tracking-wider">Content Operations Parameter Config:</label>
+                      <div className="flex space-x-4 text-xs">
+                        {Object.keys(socialChannels).map(ch => (
+                          <label key={ch} className="flex items-center space-x-2 text-slate-300">
+                            <input type="checkbox" checked={socialChannels[ch]} onChange={() => setSocialChannels(p => ({ ...p, [ch]: !p[ch] }))} className="accent-cyan-500" />
+                            <span>{ch} API Connection</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {(onboardType === 'life' || onboardType === 'both') && (
+                    <div className="space-y-2 p-4 bg-slate-950/50 border border-slate-800 rounded-xl space-y-2">
+                      <label className="text-[11px] text-cyan-400 font-bold block uppercase tracking-wider">Financial Structure Target Config:</label>
+                      <div className="flex items-center space-x-3 text-xs">
+                        <span className="text-slate-400 text-xs">Monthly Budget Ceiling:</span>
+                        <input type="text" value={targetMonthlyBudget} onChange={(e) => setTargetMonthlyBudget(e.target.value)} className="bg-slate-950 border border-slate-800 p-2 rounded-lg outline-none w-28 text-cyan-400 font-bold" />
+                        <span className="text-slate-500">USD/mo</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <button onClick={executeOnboarding} className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold py-3.5 rounded-xl uppercase tracking-widest transition shadow-lg shadow-cyan-500/10">
+                    ⚡ Instantiate Profiles & Dispatch Base Agents
+                  </button>
+                </div>
+              </div>
+            );
+          }
+
+          // CORE MATRIX OPERATION PANEL
+          return (
+            <div className="min-h-screen bg-slate-950 flex flex-col p-6">
+              <header className="border-b border-slate-800 pb-4 flex justify-between items-center mb-6 font-mono">
+                <div>
+                  <h1 className="text-sm font-black tracking-widest text-slate-200">AMANI // OPERATIONAL COMMAND MATRIX</h1>
+                  <div className="flex space-x-2 mt-2">
+                    {systemState.profiles.map(prof => (
+                      <button key={prof.id} onClick={() => { setActiveProfile(prof); loadProfileData(prof.id); }} className={`px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider font-mono transition ${activeProfile?.id === prof.id ? 'bg-cyan-500 text-slate-950 font-black shadow-lg shadow-cyan-500/10' : 'bg-slate-900 border border-slate-800 text-slate-400'}`}>
+                        {prof.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <span className="bg-slate-900 border border-slate-800 px-3 py-1.5 text-xs text-cyan-400 font-bold rounded-xl font-mono">● Grid Online</span>
+              </header>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-6">
+                  
+                  {/* REAL-TIME MATRIX CELL METRICS */}
+                  <section className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
+                    <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono">Telemetry Coordinates Grid — {activeProfile?.name}</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {dashboardData.trackedParameters?.map(p => (
+                        <div key={p.id} className="p-4 bg-slate-950 border border-slate-800 rounded-xl font-mono flex flex-col justify-between space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-[9px] bg-slate-900 text-slate-400 border border-slate-800 px-2 py-0.5 rounded font-bold uppercase">{p.category}</span>
+                            <span className="text-[10px] font-bold text-emerald-400">● {p.status}</span>
+                          </div>
+                          <div>
+                            <div className="text-xs text-slate-400 font-bold font-sans">{p.name}</div>
+                            <div className="text-sm font-bold text-slate-100 mt-1">{p.value}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+
+                  {/* CORE STRATEGY & STATIC ASSETS ENGINE */}
+                  <section className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
+                    <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono">Core Strategy Config Assets (Knowledge Base)</h3>
+                    <div className="space-y-2">
+                      {dashboardData.strategyAssets?.map(asset => (
+                        <div key={asset.id} className="p-3 bg-slate-950 border border-slate-800 rounded-xl flex font-mono text-xs items-center justify-between">
+                          <span className="text-slate-400 uppercase text-[10px] bg-slate-900 border border-slate-800/60 px-2 py-0.5 rounded">{asset.knowledge_key.replace('_',' ')}</span>
+                          <span className="text-slate-200 font-bold text-right ml-4">{asset.knowledge_value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+
+                  {/* ACTIVE LIVE TASK BROKER QUEUE */}
+                  <section className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
+                    <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono">Agent Operational Task Buffer Queue</h3>
+                    <div className="space-y-2 font-mono text-xs">
+                      {dashboardData.activeTasks?.length === 0 && <p className="text-slate-500 italic">No instructions buffered in the task queue engine.</p>}
+                      {dashboardData.activeTasks?.map(task => (
+                        <div key={task.id} className="p-3 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center">
+                          <div>
+                            <span className="text-amber-400 font-bold">[{task.task_type}]</span>
+                            <span className="text-slate-400 ml-3 text-[11px]">Assigned Agent Target: {task.assigned_agent}</span>
+                          </div>
+                          <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${task.status === 'Pending' ? 'bg-amber-950/40 text-amber-400 animate-pulse border border-amber-800/40' : 'bg-emerald-950/40 text-emerald-400 border border-emerald-800/40'}`}>{task.status}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                </div>
+
+                <div className="space-y-6 font-mono">
+                  {/* COCKPIT DISPATCH TRIGGERS COCKPIT */}
+                  <section className="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
+                    <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase">Strategic Operation Controls</h3>
+                    <p className="text-[10px] text-slate-500 uppercase mt-0.5">Inject ad-hoc action items directly into the agent tasks stream</p>
+                    
+                    <div className="space-y-2 text-xs">
+                      {activeProfile?.name.includes("Business") ? (
+                        <>
+                          <button onClick={() => dispatchTaskPulse('POSTING_SUGGESTION', 'Generate content variations targeting automated systems integration templates', 'SocialPostingAgent')} className="w-full bg-slate-800 border border-slate-700 hover:bg-slate-700 p-2.5 font-bold rounded-xl text-left text-cyan-400 flex justify-between">
+                            <span>⚡ Request Post Content Suggestion</span> <span>→</span>
+                          </button>
+                          <button onClick={() => dispatchTaskPulse('TREND_SCRAPE', 'Scrape major data vectors regarding developer workflow changes', 'TrendScraperNode')} className="w-full bg-slate-800 border border-slate-700 hover:bg-slate-700 p-2.5 font-bold rounded-xl text-left text-cyan-400 flex justify-between">
+                            <span>⚡ Scrape Market Trends Index</span> <span>→</span>
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button onClick={() => dispatchTaskPulse('BUDGET_AUDIT', 'Audit ledger transactions against budget thresholds caps', 'FinancialAuditNode')} className="w-full bg-slate-800 border border-slate-700 hover:bg-slate-700 p-2.5 font-bold rounded-xl text-left text-cyan-400 flex justify-between">
+                            <span>⚡ Run Financial Ledger Audit</span> <span>→</span>
+                          </button>
+                          <button onClick={() => dispatchTaskPulse('TIME_BLOCK_SYNC', 'Parse incoming digital strings to shield offline evening down-time blocks', 'TimeManagementOptimizer')} className="w-full bg-slate-800 border border-slate-700 hover:bg-slate-700 p-2.5 font-bold rounded-xl text-left text-cyan-400 flex justify-between">
+                            <span>⚡ Enforce Time Block Shielding</span> <span>→</span>
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </section>
+
+                  {/* INSTANTIATE CUSTOM AGENT NODE */}
+                  <section className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
+                    <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase">Spawn Custom Agent Node</h3>
+                    <form onSubmit={registerAgent} className="space-y-3 text-xs">
+                      <input type="text" required value={agentName} onChange={(e) => setAgentName(e.target.value)} placeholder="Agent Registry Node Name" className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 outline-none" />
+                      <input type="text" required value={agentPurpose} onChange={(e) => setAgentPurpose(e.target.value)} placeholder="Target Operational Flow Parameter" className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 outline-none" />
+                      <button type="submit" className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-xl uppercase tracking-wider transition">Instantiate Agent spec</button>
+                    </form>
+                    {genToken && (
+                      <div className="mt-2 p-2 bg-slate-950 border border-slate-800 rounded-lg text-[9px] break-all text-slate-400">
+                        <span className="text-cyan-400 font-bold">Bearer Token:</span> {genToken}
+                      </div>
+                    )}
+                  </section>
+
+                  {/* INJECT AD-HOC TELEMETRY FIELD */}
+                  <section className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
+                    <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono">Inject Coordinate Node</h3>
+                    <form onSubmit={addCustomField} className="space-y-3 text-xs">
+                      <input type="text" required value={inputName} onChange={(e) => setInputName(e.target.value)} placeholder="Metric Key Identifier" className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 outline-none" />
+                      <input type="text" required value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Data Coordinate Value" className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 outline-none" />
+                      <button type="submit" className="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 font-bold py-2.5 rounded-xl text-slate-200 transition">Inject Field Node</button>
+                    </form>
+                  </section>
+                </div>
+
+              </div>
             </div>
-            <div class="bg-slate-900/50 p-2 rounded border border-slate-800/40">
-              <div class="text-[9px] text-slate-500 uppercase tracking-wider">Sleep Score</div>
-              <div class="text-sm font-mono font-bold text-slate-200">82</div>
-            </div>
-          </div>
-        </div>
+          );
+        }
 
-        <div class="bg-slate-950 p-3.5 border border-slate-800 rounded-xl space-y-2">
-          <div class="flex justify-between items-center">
-            <span class="text-xs font-bold text-slate-200 font-mono flex items-center gap-1.5">🚀 WHOOP Strap 4.0</span>
-            <span class="text-[10px] font-mono font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 px-1.5 rounded">WARNING</span>
-          </div>
-          <div class="grid grid-cols-2 gap-2 text-center">
-            <div class="bg-slate-900/50 p-2 rounded border border-slate-800/40">
-              <div class="text-[9px] text-slate-500 uppercase tracking-wider">Recovery Index</div>
-              <div class="text-sm font-mono font-bold text-rose-400">42%</div>
-            </div>
-            <div class="bg-slate-900/50 p-2 rounded border border-slate-800/40">
-              <div class="text-[9px] text-slate-500 uppercase tracking-wider">Day Strain</div>
-              <div class="text-sm font-mono font-bold text-slate-200">14.2</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl space-y-3">
-        <h4 class="text-xs font-bold font-mono tracking-widest text-slate-400 uppercase">Trigger Logic Diagnostics</h4>
-        <p class="text-[11px] text-slate-400 leading-relaxed">Current safety parameters gate pipelines if WHOOP recovery drops under <span class="font-mono text-rose-400 font-bold">45%</span>.</p>
-        <div class="p-3 rounded-lg border text-center text-xs font-mono font-black tracking-wider uppercase bg-rose-500/10 border-rose-500/30 text-rose-400 animate-pulse">🚨 Trigger Intercept: Manual Approval Required</div>
-      </section>
-
-      <section class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl space-y-3">
-        <h3 class="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono">Hardware Access Layer</h3>
-        <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between text-xs font-mono">
-          <div class="text-slate-300">🛡️ FIDO2 YubiKey Matrix Core</div>
-          <span id="keyStatus" class="text-amber-400 font-bold text-[10px] uppercase bg-amber-500/10 px-1.5 py-0.5 border border-amber-500/20 rounded">STANDBY</span>
-        </div>
-        <button onclick="verifyKey()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-mono font-bold text-[11px] py-2.5 rounded transition active:scale-95">🔑 Simulate Hardware Token Verification</button>
-      </section>
-    </div>
-  </main>
-
-  <div class="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-md text-[11px] tracking-widest font-mono font-bold text-cyan-400 shadow-2xl uppercase">Technical Layout Config</div>
-
-  <script>
-    var matrixPersonas = {
-      Developer: { user: '@amani_dev_matrix', role: 'System_Architect', color: 'cyan', blueprint: 'PCI_DSS_v4_Tokenization_Filter' },
-      Executive: { user: '@exec_clearance_amani', role: 'Exec_Assistant', color: 'indigo', blueprint: 'SOC2_Type_II_Audit_Pipeline' },
-      Family: { user: '@family_lead_amani', role: 'Family_Lead', color: 'emerald', blueprint: 'Household_Pacing_Schedule' }
-    };
-    function enterWorkspace() { document.getElementById('portalGate').style.display = 'none'; }
-    function verifyKey() {
-      var b = document.getElementById('keyStatus'); b.innerText = "VERIFIED_AUTH";
-      b.className = "text-emerald-400 font-bold text-[10px] uppercase bg-emerald-500/10 px-1.5 py-0.5 border border-emerald-500/20 rounded shadow-[0_0_8px_rgba(52,211,153,0.2)]";
-    }
-    function switchPersona(p) {
-      var d = matrixPersonas[p];
-      document.getElementById('profileUser').innerText = d.user;
-      document.getElementById('profileUser').className = 'text-' + d.color + '-400 font-mono';
-      document.getElementById('profileRole').innerText = d.role;
-      document.getElementById('profileBlueprint').innerText = d.blueprint;
-      document.getElementById('statusDot').className = 'h-2.5 w-2.5 rounded-full bg-' + d.color + '-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]';
-      ['Developer', 'Executive', 'Family'].forEach(function(x) {
-        var btn = document.getElementById('btn-' + x);
-        if(x === p) { btn.className = 'px-3 py-1 rounded text-xs font-mono font-bold transition bg-' + d.color + '-500/10 text-' + d.color + '-400 border border-' + d.color + '-500/20'; }
-        else { btn.className = "px-3 py-1 rounded text-xs font-mono font-bold transition text-slate-400"; }
-      });
-    }
-  </script>
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
